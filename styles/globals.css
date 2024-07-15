@@ -31,3 +31,18 @@ body {
     text-wrap: balance;
   }
 }
+
+.no__overflow::-webkit-scrollbar {
+  display: none;
+}
+
+.no__overflow {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.swiper {
+  height: 100%;
+  width: 100%;
+  overflow: visible !important;
+}

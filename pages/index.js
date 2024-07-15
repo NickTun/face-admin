@@ -1,118 +1,260 @@
 import Image from "next/image";
-import { Inter } from "next/font/google";
+import Head from 'next/head'
+import React from "react";
 
-const inter = Inter({ subsets: ["latin"] });
+import { Swiper, SwiperSlide } from 'swiper/react';
+
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/scrollbar';
 
 export default function Home() {
-  return (
-    <main
-      className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
-    >
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">pages/index.js</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+  const RIGHT_PANEL_MIN_WIDTH = 340;
+  const LEFT_PANEL_MIN_WIDTH = 400;
+  const [timePeriod, setTimePeriod] = React.useState(0);
+  const [eventSearchState, setEventSearchState] = React.useState(false);
+
+  const [users, setUsers] = React.useState([
+    {
+      'name': 'Мирзиахмед',
+      'surname': 'Викторович',
+      'job': 'Грузчик'
+    }, 
+    {
+      'name': 'Александер',
+      'surname': 'Садовников',
+      'job': 'Методист'
+    }, 
+  ]);
+
+  const [events, setEvents] = React.useState([
+    {
+      'name': 'Мирзиахмед Викторович',
+      'location': 'Склад Б',
+      'datetime': '08:08 20.11.24'
+    }, 
+    {
+      'name': 'Мирзиахмед Викторович',
+      'location': 'Офис А',
+      'datetime': '08:08 20.11.24'
+    }, 
+  ]);
+
+  const [currentUser, setCurrentUser] = React.useState({
+    'name': 'Александр',
+    'surname': 'Садовников',
+    'lastname': 'Владимирович',
+    'job': 'Методист',
+    'department': 'Большие Данные',
+    'age': '35',
+    'images': [
+      'https://sun77-1.userapi.com/s/v1/ig2/BH_z2Tt8nKEOCZ3i42yRrLhZf13yj_9Ntn4EiQNuJ-9tu7JXZro9wnDFctSDUe8hl_6WUQQMvpVUfT6EF9AxRLYP.jpg?quality=95&crop=141,184,1453,1453&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1280x1280,1440x1440&ava=1&u=gcvzguyLtcy-pHQ-kARNg8U6L254-hd1BJ6TuX9XYrQ&cs=200x200',
+      'https://sun77-1.userapi.com/s/v1/ig2/BH_z2Tt8nKEOCZ3i42yRrLhZf13yj_9Ntn4EiQNuJ-9tu7JXZro9wnDFctSDUe8hl_6WUQQMvpVUfT6EF9AxRLYP.jpg?quality=95&crop=141,184,1453,1453&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1280x1280,1440x1440&ava=1&u=gcvzguyLtcy-pHQ-kARNg8U6L254-hd1BJ6TuX9XYrQ&cs=200x200',
+      'https://sun77-1.userapi.com/s/v1/ig2/BH_z2Tt8nKEOCZ3i42yRrLhZf13yj_9Ntn4EiQNuJ-9tu7JXZro9wnDFctSDUe8hl_6WUQQMvpVUfT6EF9AxRLYP.jpg?quality=95&crop=141,184,1453,1453&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1280x1280,1440x1440&ava=1&u=gcvzguyLtcy-pHQ-kARNg8U6L254-hd1BJ6TuX9XYrQ&cs=200x200',
+      'https://sun77-1.userapi.com/s/v1/ig2/BH_z2Tt8nKEOCZ3i42yRrLhZf13yj_9Ntn4EiQNuJ-9tu7JXZro9wnDFctSDUe8hl_6WUQQMvpVUfT6EF9AxRLYP.jpg?quality=95&crop=141,184,1453,1453&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1280x1280,1440x1440&ava=1&u=gcvzguyLtcy-pHQ-kARNg8U6L254-hd1BJ6TuX9XYrQ&cs=200x200',
+      'https://sun77-1.userapi.com/s/v1/ig2/BH_z2Tt8nKEOCZ3i42yRrLhZf13yj_9Ntn4EiQNuJ-9tu7JXZro9wnDFctSDUe8hl_6WUQQMvpVUfT6EF9AxRLYP.jpg?quality=95&crop=141,184,1453,1453&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1280x1280,1440x1440&ava=1&u=gcvzguyLtcy-pHQ-kARNg8U6L254-hd1BJ6TuX9XYrQ&cs=200x200',
+      'https://sun77-1.userapi.com/s/v1/ig2/BH_z2Tt8nKEOCZ3i42yRrLhZf13yj_9Ntn4EiQNuJ-9tu7JXZro9wnDFctSDUe8hl_6WUQQMvpVUfT6EF9AxRLYP.jpg?quality=95&crop=141,184,1453,1453&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1280x1280,1440x1440&ava=1&u=gcvzguyLtcy-pHQ-kARNg8U6L254-hd1BJ6TuX9XYrQ&cs=200x200',
+      'https://sun77-1.userapi.com/s/v1/ig2/BH_z2Tt8nKEOCZ3i42yRrLhZf13yj_9Ntn4EiQNuJ-9tu7JXZro9wnDFctSDUe8hl_6WUQQMvpVUfT6EF9AxRLYP.jpg?quality=95&crop=141,184,1453,1453&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1280x1280,1440x1440&ava=1&u=gcvzguyLtcy-pHQ-kARNg8U6L254-hd1BJ6TuX9XYrQ&cs=200x200',
+      'https://sun77-1.userapi.com/s/v1/ig2/BH_z2Tt8nKEOCZ3i42yRrLhZf13yj_9Ntn4EiQNuJ-9tu7JXZro9wnDFctSDUe8hl_6WUQQMvpVUfT6EF9AxRLYP.jpg?quality=95&crop=141,184,1453,1453&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1280x1280,1440x1440&ava=1&u=gcvzguyLtcy-pHQ-kARNg8U6L254-hd1BJ6TuX9XYrQ&cs=200x200',
+      'https://sun77-1.userapi.com/s/v1/ig2/BH_z2Tt8nKEOCZ3i42yRrLhZf13yj_9Ntn4EiQNuJ-9tu7JXZro9wnDFctSDUe8hl_6WUQQMvpVUfT6EF9AxRLYP.jpg?quality=95&crop=141,184,1453,1453&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1280x1280,1440x1440&ava=1&u=gcvzguyLtcy-pHQ-kARNg8U6L254-hd1BJ6TuX9XYrQ&cs=200x200',
+    ]
+  });
+
+  function Event({name, location, datetime}) {
+    return (
+      <div className="h-16 flex-none flex gap-3 px-4 flex-wrap content-center rounded-3xl bg-gradient-to-t from-[#8787ee]/[0.08] to-[#1919ef]/[0.08] border-[#5c5c7c]/40 border-[1px]">
+        <Image
+          src="/user.svg"
+          alt="user alt"
+          width={38}
+          height={38}
+          className="select-none"
+        />
+        <div className="flex flex-col justify-center">
+          <h4 className="leading-none text-[11px] text-white/50">Прошел(а) в {location}</h4>
+          <h4 className="leading-none font-bold text-[14px]">{name}</h4>
+          <h4 className="leading-none font-thin text-[11px] text-white/50">В {datetime}</h4>
         </div>
       </div>
+    );
+  }
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700/10 after:dark:from-sky-900 after:dark:via-[#0141ff]/40 before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
+  return (
+    <>
+      <Head>
+        <title>Админ-панель</title>
+      </Head>
+      <div className="flex justify-stretch h-[calc(100vh-80px)]">
+        <div className="flex flex-col justify-between flex-none w-[28%]bg-gradient-to-t from-[#8787ee]/[0.04] to-[#1919ef]/[0.04] border-r-[1px] border-[#5c5c7c]/40"
+        style={{ minWidth: `${LEFT_PANEL_MIN_WIDTH}px`}}>
+          <div className="grow overflow-y-auto no__overflow">
+            { users.map((user, index) => {
+              return (
+                <div key={index} className="flex gap-4 h-[80px] hover:bg-white/5 cursor-pointer">
+                  <div className="flex flex-col justify-center pl-5">
+                    <Image
+                      src="/user.svg"
+                      alt="user alt"
+                      width={40}
+                      height={40}
+                      className="cursor-pointer select-none"
+                    />
+                  </div>
+                  <div className="select-none grow flex justify-between border-[#5c5c7c]/40 border-b-[1px] pr-5">
+                    <div className="flex flex-col justify-center">
+                      <h4 className="leading-none font-bold text-[15px]">{user.name} {user.surname}</h4>
+                      <h4 className="leading-none text-[12px] text-white/50">{user.job}</h4>
+                    </div>
+                    <div className="flex flex-col justify-center">
+                      <Image
+                        src="/cross.svg"
+                        alt="user alt"
+                        width={20}
+                        height={20}
+                        className="cursor-pointer select-none"
+                      />
+                    </div>
+                  </div>
+                </div>
+              );
+            }) }
+          </div>
+          <div className="shadow-[0px_-4px_30px_0_rgba(0,0,0,0.15)] flex-none px-5 gap-5 flex justify-between flex-wrap content-center h-16 bg-gradient-to-t from-[#8787ee]/[0.04] to-[#1919ef]/[0.04] border-t-[1px] border-[#5c5c7c]/40">
+            <div className="px-2 flex justify-between gap-2 rounded-lg bg-black/10 border border-[#5c5c7c]/40 grow focus:outline-none focus:border-slate-700">
+                <label htmlFor="userSearch" className="h-full flex flex-col justify-center w-fit flex-none">
+                  <Image
+                      src="/search.svg"
+                      alt="search icon"
+                      width={10}
+                      height={10}
+                  />
+                </label>
+              <input type="text" name="userSearch" id="userSearch" className="h-7 text-[14px] bg-transparent border-none outline-none grow" />
+            </div>
+            <Image
+                  src="/add.svg"
+                  alt="add icon"
+                  width={20}
+                  height={20}
+                  className="cursor-pointer select-none"
+              />
+          </div>
+        </div>
+        <div className="grow p-5">
+          <div className="pb-7 flex flex-col justify-between gap-7 h-full overflow-hidden rounded-xl bg-gradient-to-t from-[#8787ee]/[0.04] to-[#1919ef]/[0.04] border-[1px] border-[#5c5c7c]/40">
+            <div className="flex justify-between gap-8 w-full h-[60%] pt-7  pl-7">
+              <div className="relative h-full w-[250px] overflow-hidden rounded-xl bg-gradient-to-t from-[#8787ee]/[0.04] to-[#1919ef]/[0.04] border-[1px] border-[#5c5c7c]/40">
+                <Image
+                    src={currentUser.images[0]}
+                    alt={`${currentUser.name} picture`}
+                    layout={'fill'}
+                    objectFit={'contain'}
+                    className="cursor-pointer select-none h-full w-full"
+                />
+              </div>
+              <div className="flex flex-col gap-8 grow pt-7">
+                <div className="flex gap-5 w-full">
+                  <div className="flex flex-col gap-5">
+                    <h4 className="leading-none font-medium text-[17px] text-white/40">Фамилия:</h4>
+                    <h4 className="leading-none font-medium text-[17px] text-white/40">Имя:</h4>
+                    <h4 className="leading-none font-medium text-[17px] text-white/40">Отчество:</h4>
+                  </div>
+                  <div className="flex flex-col gap-5">
+                    <h4 className="leading-none font-medium text-[17px] text-white">{currentUser.surname}</h4>
+                    <h4 className="leading-none font-medium text-[17px] text-white">{currentUser.name}</h4>
+                    <h4 className="leading-none font-medium text-[17px] text-white">{currentUser.lastname}</h4>
+                  </div>
+                </div>
+                <hr className="border-[#5c5c7c]/40" />
+                <div className="flex gap-5 w-full">
+                  <div className="flex flex-col gap-6">
+                    <h4 className="leading-none font-medium text-[17px] text-white/40">Должность:</h4>
+                    <h4 className="leading-none font-medium text-[17px] text-white/40">Возраст:</h4>
+                    <h4 className="leading-none font-medium text-[17px] text-white/40">Отдел:</h4>
+                  </div>
+                  <div className="flex flex-col gap-6">
+                    <h4 className="leading-none font-medium text-[17px] text-white">{currentUser.job}</h4>
+                    <h4 className="leading-none font-medium text-[17px] text-white">{currentUser.age}</h4>
+                    <h4 className="leading-none font-medium text-[17px] text-white">{currentUser.department}</h4>
+                  </div>
+                </div>
+              </div>            
+            </div>
+            <hr className="border-[#5c5c7c]/40 w-full ml-7"/>
+            <div className="grow relative">
+              <div className="absolute inset-0 overflow-hidden px-7">
+                <Swiper
+                  spaceBetween={30}
+                  slidesPerView={3.4}
+                  onSlideChange={() => console.log(window.innerWidth)}
+                  className="px-7"
+                >
+                  { currentUser.images.map((image, index) => {
+                    return (
+                      <SwiperSlide key={index}>
+                        <div className="relative aspect-square h-full overflow-hidden rounded-xl bg-gradient-to-t from-[#8787ee]/[0.04] to-[#1919ef]/[0.04] border-[1px] border-[#5c5c7c]/40">
+                          <Image
+                              src={image}
+                              alt={`${currentUser.name} picture`}
+                              layout={'fill'}
+                              objectFit={'contain'}
+                              className="cursor-pointer select-none relative"
+                          />
+                        </div>
+                      </SwiperSlide>
+                    );
+                  }) }
+                </Swiper>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col justify-between flex-none w-[23%] bg-gradient-to-t from-[#8787ee]/[0.04] to-[#1919ef]/[0.04] border-l-[1px] border-[#5c5c7c]/40"
+        style={{ minWidth: `${RIGHT_PANEL_MIN_WIDTH}px`}}>
+            <div className="grow p-5 flex flex-col gap-5 overflow-y-auto no__overflow">
+              { events.map((event, index) => {
+                return (
+                  <Event key={index} name={event.name} location={event.location} datetime={event.datetime} />
+                );
+              }) }
+            </div>
+            <div
+              className="flex-none shadow-[0px_-4px_30px_0_rgba(0,0,0,0.15)] overflow-hidden px-5 gap-5 flex justify-between flex-wrap content-center
+              h-16 bg-gradient-to-t from-[#8787ee]/[0.04] to-[#1919ef]/[0.04] border-t-[1px] border-[#5c5c7c]/40"
+            >
+              <div
+                className="transition-all duration-500 px-2 flex justify-between gap-2 rounded-lg bg-black/10 border border-[#5c5c7c]/40 focus:outline-none focus:border-slate-700"
+                style={{ width: eventSearchState ? '100%' : '50px' }}
+              >
+                <label htmlFor="eventSearch" className="h-full flex flex-col justify-center w-fit flex-none">
+                  <Image
+                      src="/search.svg"
+                      alt="search icon"
+                      width={10}
+                      height={10}
+                      className="select-none"
+                  />
+                </label>
+                
+                <input type="text" id="eventSearch" className="h-6 text-[14px] bg-transparent border-none outline-none w-full"
+                onFocus={() => setEventSearchState(true)} onBlur={() => setEventSearchState(false)}/>
+              </div>
+              <div
+                className="px-1 relative grid grid-flow-col justify-around content-center grow flex-none w-[100px] h-7 transition-all
+                rounded-lg bg-gradient-to-t from-[#8787ee]/[0.08] to-[#1919ef]/[0.08] border border-[#5c5c7c]/40 duration-500"
+                style={{ marginRight: eventSearchState ? `-${RIGHT_PANEL_MIN_WIDTH}px` : '0px' }}
+              >
+                <div className="absolute inset-0 p-1 pointer-events-none">
+                  <div className="bg-white/10 w-[calc(100%/3)] h-full rounded-md shadow-sm transition-all duration-500" style={{ marginLeft: `calc(100%/3*${timePeriod})` }}/>
+                </div>
+                <h4 className="select-none cursor-pointer w-12 text-center font-medium text-[12px] transition-all duration-500" onClick={() => setTimePeriod(0)} style={{ color: timePeriod == 0 ? 'white' : '#818FA4'}}>День</h4>
+                <h4 className="select-none cursor-pointer w-12 text-center font-medium text-[12px] transition-all duration-500" onClick={() => setTimePeriod(1)} style={{ color: timePeriod == 1 ? 'white' : '#818FA4'}}>Месяц</h4>
+                <h4 className="select-none cursor-pointer w-12 text-center font-medium text-[12px] transition-all duration-500" onClick={() => setTimePeriod(2)} style={{ color: timePeriod == 2 ? 'white' : '#818FA4'}}>Год</h4>
+              </div>
+            </div>
+        </div>
       </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Discover and deploy boilerplate example Next.js&nbsp;projects.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+    </>
   );
 }
