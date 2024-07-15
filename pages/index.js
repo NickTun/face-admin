@@ -17,18 +17,12 @@ export default function Home() {
   const [eventSearchState, setEventSearchState] = React.useState(false);
   const [eventProps, setEventProps] = React.useState([true, true]);
 
-  const [users, setUsers] = React.useState([
-    {
-      'name': 'Мирзиахмед',
-      'surname': 'Викторович',
-      'job': 'Грузчик'
-    }, 
-    {
-      'name': 'Александер',
-      'surname': 'Садовников',
-      'job': 'Методист'
-    }, 
-  ]);
+  const headers = {
+     "Access-Control-Allow-Origin": 'http://localhost:3000',
+      'Access-Control-Request-Method': 'GET',
+  };
+
+  const [users, setUsers] = React.useState([]);
 
   const [events, setEvents] = React.useState([
     {
@@ -63,17 +57,23 @@ export default function Home() {
     ]
   });
 
-  // useEffect(() => {
-  //   async function fetch() {
-  //     const recievedUsers = await axios.get('127.0.0.1:8080/users');
-  //     if(recievedUsers) setUsers(recievedUsers);
+  useEffect(() => {
+    fetch('http://127.0.0.1:8000/users/')
+    .then(function(response) {
+      return response.json();
+    }).then(function(data) {
+      setUsers(data);
+      console.log(data)
+    });
 
-  //     const recievedEvents = await axios.get('127.0.0.1:8080/events');
-  //     if(recievedEvents) setEvents(recievedEvents);
-  //   }
-    
-  //   fetch();
-  // }, []);
+    // fetch('http://127.0.0.1:8000/events/')
+    // .then(function(response) {
+    //   return response.json();
+    // }).then(function(data) {
+    //   setEvents(data);
+    //   console.log(data)
+    // });
+  }, []);
 
   function pushEvent(name, location, datetime) {
     const newEvent = {
