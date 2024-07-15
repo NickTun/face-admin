@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Head from 'next/head'
-import React from "react";
+import axios from 'axios';
+import React, { useEffect } from "react";
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 
@@ -14,6 +15,7 @@ export default function Home() {
   const LEFT_PANEL_MIN_WIDTH = 400;
   const [timePeriod, setTimePeriod] = React.useState(0);
   const [eventSearchState, setEventSearchState] = React.useState(false);
+  const [eventProps, setEventProps] = React.useState([true, true]);
 
   const [users, setUsers] = React.useState([
     {
@@ -61,9 +63,31 @@ export default function Home() {
     ]
   });
 
+  // useEffect(() => {
+  //   async function fetch() {
+  //     const recievedUsers = await axios.get('127.0.0.1:8080/users');
+  //     if(recievedUsers) setUsers(recievedUsers);
+
+  //     const recievedEvents = await axios.get('127.0.0.1:8080/events');
+  //     if(recievedEvents) setEvents(recievedEvents);
+  //   }
+    
+  //   fetch();
+  // }, []);
+
+  function pushEvent(name, location, datetime) {
+    const newEvent = {
+      'name': name,
+      'location': location,
+      'datetime': datetime
+    };
+    setEvents(events => [newEvent, ...events]);
+    setEventProps(eventProps => [eventProps, ...false])
+  }
+
   function Event({name, location, datetime}) {
     return (
-      <div className="h-16 flex-none flex gap-3 px-4 flex-wrap content-center rounded-3xl bg-gradient-to-t from-[#8787ee]/[0.08] to-[#1919ef]/[0.08] border-[#5c5c7c]/40 border-[1px]">
+      <div className="transition-all duartion-500 h-16 flex-none flex gap-3 px-4 flex-wrap content-center rounded-3xl bg-gradient-to-t from-[#8787ee]/[0.08] to-[#1919ef]/[0.08] border-[#5c5c7c]/40 border-[1px]">
         <Image
           src="/user.svg"
           alt="user alt"
@@ -138,6 +162,7 @@ export default function Home() {
                   width={20}
                   height={20}
                   className="cursor-pointer select-none"
+                  onClick={() => pushEvent('pedro', 'pedro', 'pedro')}
               />
           </div>
         </div>
@@ -212,7 +237,7 @@ export default function Home() {
         </div>
         <div className="flex flex-col justify-between flex-none w-[23%] bg-gradient-to-t from-[#8787ee]/[0.04] to-[#1919ef]/[0.04] border-l-[1px] border-[#5c5c7c]/40"
         style={{ minWidth: `${RIGHT_PANEL_MIN_WIDTH}px`}}>
-            <div className="grow p-5 flex flex-col gap-5 overflow-y-auto no__overflow">
+            <div className="grow p-5 overflow-y-auto no__overflow">
               { events.map((event, index) => {
                 return (
                   <Event key={index} name={event.name} location={event.location} datetime={event.datetime} />
