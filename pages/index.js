@@ -91,7 +91,7 @@ export default function Home() {
   useEffect(() => {
     requestAnimationFrame(() => {
       eventField.current.style.transitionProperty = "all";
-      eventField.current.style.marginTop = "20px"
+      eventField.current.style.marginTop = "0px"
     });
     
   }, [events])
@@ -103,7 +103,7 @@ export default function Home() {
       'datetime': datetime
     };
     eventField.current.style.transitionProperty = "none";
-    eventField.current.style.marginTop = "-64px"
+    eventField.current.style.marginTop = "-84px"
     setEvents(events => [...events, newEvent]);
   }
 
@@ -248,7 +248,7 @@ export default function Home() {
         </div>
         <div className="overflow-hidden flex flex-col justify-between flex-none w-[23%] bg-gradient-to-t from-[#8787ee]/[0.04] to-[#1919ef]/[0.04] border-l-[1px] border-[#5c5c7c]/40"
         style={{ minWidth: `${RIGHT_PANEL_MIN_WIDTH}px`}}>
-            <div ref={eventField} className="transition-all duration-500 grow px-5 overflow-y-auto no__overflow">
+            <div ref={eventField} className="transition-all duration-500 grow p-5 overflow-y-auto no__overflow">
               { events.slice(0).reverse().map((event, index) => {
                 return (
                   <div key={index} className="h-16 mb-5 flex-none flex gap-3 px-4 flex-wrap content-center rounded-3xl
