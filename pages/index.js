@@ -22,7 +22,20 @@ export default function Home() {
       'Access-Control-Request-Method': 'GET',
   };
 
-  const [users, setUsers] = React.useState([]);
+  const [users, setUsers] = React.useState([
+    {
+      'id': '32',
+      'name': 'Мирзиахмед',
+      'surname': 'Викторович',
+      'job': 'Грузчик'
+    }, 
+    {
+      'id': '12',
+      'name': 'Александер',
+      'surname': 'Садовников',
+      'job': 'Методист'
+    }, 
+  ]);
 
   const [events, setEvents] = React.useState([
     {
@@ -63,16 +76,14 @@ export default function Home() {
       return response.json();
     }).then(function(data) {
       setUsers(data);
-      console.log(data)
     });
 
-    // fetch('http://127.0.0.1:8000/events/')
-    // .then(function(response) {
-    //   return response.json();
-    // }).then(function(data) {
-    //   setEvents(data);
-    //   console.log(data)
-    // });
+    fetch('http://127.0.0.1:8000/events/')
+    .then(function(response) {
+      return response.json();
+    }).then(function(data) {
+      setEvents(data);
+    });
   }, []);
 
   function pushEvent(name, location, datetime) {
@@ -83,6 +94,15 @@ export default function Home() {
     };
     setEvents(events => [newEvent, ...events]);
     setEventProps(eventProps => [eventProps, ...false])
+  }
+
+  function handleUserSelect(id) {
+    fetch(`http://127.0.0.1:8000/user?id=${id}`)
+    .then(function(response) {
+      return response.json();
+    }).then(function(data) {
+      seCurrentUser(data);
+    });
   }
 
   function Event({name, location, datetime}) {
@@ -115,7 +135,7 @@ export default function Home() {
           <div className="grow overflow-y-auto no__overflow">
             { users.map((user, index) => {
               return (
-                <div key={index} className="flex gap-4 h-[80px] hover:bg-white/5 cursor-pointer">
+                <div id={user.id} onClick={(e) => handleUserSelect(e.target.id)} key={index} className="flex gap-4 h-[80px] hover:bg-white/5 cursor-pointer">
                   <div className="flex flex-col justify-center pl-5">
                     <Image
                       src="/user.svg"
@@ -212,7 +232,6 @@ export default function Home() {
                 <Swiper
                   spaceBetween={30}
                   slidesPerView={3.4}
-                  onSlideChange={() => console.log(window.innerWidth)}
                   className="px-7"
                 >
                   { currentUser.images.map((image, index) => {
@@ -237,7 +256,7 @@ export default function Home() {
         </div>
         <div className="flex flex-col justify-between flex-none w-[23%] bg-gradient-to-t from-[#8787ee]/[0.04] to-[#1919ef]/[0.04] border-l-[1px] border-[#5c5c7c]/40"
         style={{ minWidth: `${RIGHT_PANEL_MIN_WIDTH}px`}}>
-            <div className="grow p-5 overflow-y-auto no__overflow">
+            <div className="flex flex-col gap-5 grow p-5 overflow-y-auto no__overflow">
               { events.map((event, index) => {
                 return (
                   <Event key={index} name={event.name} location={event.location} datetime={event.datetime} />
