@@ -112,7 +112,7 @@ export default function Home() {
     .then(function(response) {
       return response.json();
     }).then(function(data) {
-      seCurrentUser(data);
+      setCurrentUser(data);
     });
   }
 
