@@ -16,6 +16,7 @@ export default function Home() {
   const [timePeriod, setTimePeriod] = React.useState(0);
   const [eventSearchState, setEventSearchState] = React.useState(false);
   const [eventProps, setEventProps] = React.useState([true, true]);
+  const eventField = React.useRef(null);
 
   const headers = {
      "Access-Control-Allow-Origin": 'http://localhost:3000',
@@ -83,17 +84,27 @@ export default function Home() {
       return response.json();
     }).then(function(data) {
       setEvents(data);
+      setEventProps([...Array(data.length).fill(true)]);
     });
   }, []);
 
+  useEffect(() => {
+    requestAnimationFrame(() => {
+      eventField.current.style.transitionProperty = "all";
+      eventField.current.style.marginTop = "0px"
+    });
+    
+  }, [events])
+
   function pushEvent(name, location, datetime) {
     const newEvent = {
-      'name': name,
+      'name': name, 
       'location': location,
       'datetime': datetime
     };
-    setEvents(events => [newEvent, ...events]);
-    setEventProps(eventProps => [eventProps, ...false])
+    eventField.current.style.transitionProperty = "none";
+    eventField.current.style.marginTop = "-84px"
+    setEvents(events => [...events, newEvent]);
   }
 
   function handleUserSelect(id) {
@@ -103,25 +114,6 @@ export default function Home() {
     }).then(function(data) {
       seCurrentUser(data);
     });
-  }
-
-  function Event({name, location, datetime}) {
-    return (
-      <div className="transition-all duartion-500 h-16 flex-none flex gap-3 px-4 flex-wrap content-center rounded-3xl bg-gradient-to-t from-[#8787ee]/[0.08] to-[#1919ef]/[0.08] border-[#5c5c7c]/40 border-[1px]">
-        <Image
-          src="/user.svg"
-          alt="user alt"
-          width={38}
-          height={38}
-          className="select-none"
-        />
-        <div className="flex flex-col justify-center">
-          <h4 className="leading-none text-[11px] text-white/50">Прошел(а) в {location}</h4>
-          <h4 className="leading-none font-bold text-[14px]">{name}</h4>
-          <h4 className="leading-none font-thin text-[11px] text-white/50">В {datetime}</h4>
-        </div>
-      </div>
-    );
   }
 
   return (
@@ -182,7 +174,7 @@ export default function Home() {
                   width={20}
                   height={20}
                   className="cursor-pointer select-none"
-                  onClick={() => pushEvent('pedro', 'pedro', 'pedro')}
+                  // onClick={() => pushEvent('pedro', 'pedro', 'pedro')}
               />
           </div>
         </div>
@@ -254,12 +246,26 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div className="flex flex-col justify-between flex-none w-[23%] bg-gradient-to-t from-[#8787ee]/[0.04] to-[#1919ef]/[0.04] border-l-[1px] border-[#5c5c7c]/40"
+        <div className="overflow-hidden flex flex-col justify-between flex-none w-[23%] bg-gradient-to-t from-[#8787ee]/[0.04] to-[#1919ef]/[0.04] border-l-[1px] border-[#5c5c7c]/40"
         style={{ minWidth: `${RIGHT_PANEL_MIN_WIDTH}px`}}>
-            <div className="flex flex-col gap-5 grow p-5 overflow-y-auto no__overflow">
-              { events.map((event, index) => {
+            <div ref={eventField} className="transition-all duration-500 grow p-5 overflow-y-auto no__overflow">
+              { events.slice(0).reverse().map((event, index) => {
                 return (
-                  <Event key={index} name={event.name} location={event.location} datetime={event.datetime} />
+                  <div key={index} className="h-16 mb-5 flex-none flex gap-3 px-4 flex-wrap content-center rounded-3xl
+                  bg-gradient-to-t from-[#8787ee]/[0.08] to-[#1919ef]/[0.08] border-[#5c5c7c]/40 border-[1px] overflow-hidden">
+                    <Image
+                      src="/user.svg"
+                      alt="user alt"
+                      width={38}
+                      height={38}
+                      className="select-none"
+                    />
+                    <div className="flex flex-col justify-center">
+                      <h4 className="leading-none text-[11px] text-white/50">Прошел(а) в {event.location}</h4>
+                      <h4 className="leading-none font-bold text-[14px]">{event.name}</h4>
+                      <h4 className="leading-none font-thin text-[11px] text-white/50">В {event.datetime}</h4>
+                    </div>
+                  </div>
                 );
               }) }
             </div>
