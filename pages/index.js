@@ -127,7 +127,7 @@ export default function Home() {
           <div className="grow overflow-y-auto no__overflow">
             { users.map((user, index) => {
               return (
-                <div id={user.id} onClick={(e) => handleUserSelect(e.target.id)} key={index} className="flex gap-4 h-[80px] hover:bg-white/5 cursor-pointer">
+                <div id={user.id} onClick={(e) => handleUserSelect(user.id)} key={index} className="flex gap-4 h-[80px] hover:bg-white/5 cursor-pointer">
                   <div className="flex flex-col justify-center pl-5">
                     <Image
                       src="/user.svg"
@@ -183,7 +183,7 @@ export default function Home() {
             <div className="flex justify-between gap-8 w-full h-[60%] pt-7  pl-7">
               <div className="relative h-full w-[250px] overflow-hidden rounded-xl bg-gradient-to-t from-[#8787ee]/[0.04] to-[#1919ef]/[0.04] border-[1px] border-[#5c5c7c]/40">
                 <Image
-                    src={currentUser.images[0]}
+                    src={`http://localhost:8000/${currentUser.images[0]}`}
                     alt={`${currentUser.name} picture`}
                     layout={'fill'}
                     objectFit={'contain'}
@@ -231,7 +231,7 @@ export default function Home() {
                       <SwiperSlide key={index}>
                         <div className="relative aspect-square h-full overflow-hidden rounded-xl bg-gradient-to-t from-[#8787ee]/[0.04] to-[#1919ef]/[0.04] border-[1px] border-[#5c5c7c]/40">
                           <Image
-                              src={image}
+                              src={`http://localhost:8000/${image}`}
                               alt={`${currentUser.name} picture`}
                               layout={'fill'}
                               objectFit={'contain'}
