@@ -51,25 +51,7 @@ export default function Home() {
     }, 
   ]);
 
-  const [currentUser, setCurrentUser] = React.useState({
-    'name': 'Александр',
-    'surname': 'Садовников',
-    'lastname': 'Владимирович',
-    'job': 'Методист',
-    'department': 'Большие Данные',
-    'age': '35',
-    'images': [
-      'https://sun77-1.userapi.com/s/v1/ig2/BH_z2Tt8nKEOCZ3i42yRrLhZf13yj_9Ntn4EiQNuJ-9tu7JXZro9wnDFctSDUe8hl_6WUQQMvpVUfT6EF9AxRLYP.jpg?quality=95&crop=141,184,1453,1453&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1280x1280,1440x1440&ava=1&u=gcvzguyLtcy-pHQ-kARNg8U6L254-hd1BJ6TuX9XYrQ&cs=200x200',
-      'https://sun77-1.userapi.com/s/v1/ig2/BH_z2Tt8nKEOCZ3i42yRrLhZf13yj_9Ntn4EiQNuJ-9tu7JXZro9wnDFctSDUe8hl_6WUQQMvpVUfT6EF9AxRLYP.jpg?quality=95&crop=141,184,1453,1453&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1280x1280,1440x1440&ava=1&u=gcvzguyLtcy-pHQ-kARNg8U6L254-hd1BJ6TuX9XYrQ&cs=200x200',
-      'https://sun77-1.userapi.com/s/v1/ig2/BH_z2Tt8nKEOCZ3i42yRrLhZf13yj_9Ntn4EiQNuJ-9tu7JXZro9wnDFctSDUe8hl_6WUQQMvpVUfT6EF9AxRLYP.jpg?quality=95&crop=141,184,1453,1453&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1280x1280,1440x1440&ava=1&u=gcvzguyLtcy-pHQ-kARNg8U6L254-hd1BJ6TuX9XYrQ&cs=200x200',
-      'https://sun77-1.userapi.com/s/v1/ig2/BH_z2Tt8nKEOCZ3i42yRrLhZf13yj_9Ntn4EiQNuJ-9tu7JXZro9wnDFctSDUe8hl_6WUQQMvpVUfT6EF9AxRLYP.jpg?quality=95&crop=141,184,1453,1453&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1280x1280,1440x1440&ava=1&u=gcvzguyLtcy-pHQ-kARNg8U6L254-hd1BJ6TuX9XYrQ&cs=200x200',
-      'https://sun77-1.userapi.com/s/v1/ig2/BH_z2Tt8nKEOCZ3i42yRrLhZf13yj_9Ntn4EiQNuJ-9tu7JXZro9wnDFctSDUe8hl_6WUQQMvpVUfT6EF9AxRLYP.jpg?quality=95&crop=141,184,1453,1453&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1280x1280,1440x1440&ava=1&u=gcvzguyLtcy-pHQ-kARNg8U6L254-hd1BJ6TuX9XYrQ&cs=200x200',
-      'https://sun77-1.userapi.com/s/v1/ig2/BH_z2Tt8nKEOCZ3i42yRrLhZf13yj_9Ntn4EiQNuJ-9tu7JXZro9wnDFctSDUe8hl_6WUQQMvpVUfT6EF9AxRLYP.jpg?quality=95&crop=141,184,1453,1453&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1280x1280,1440x1440&ava=1&u=gcvzguyLtcy-pHQ-kARNg8U6L254-hd1BJ6TuX9XYrQ&cs=200x200',
-      'https://sun77-1.userapi.com/s/v1/ig2/BH_z2Tt8nKEOCZ3i42yRrLhZf13yj_9Ntn4EiQNuJ-9tu7JXZro9wnDFctSDUe8hl_6WUQQMvpVUfT6EF9AxRLYP.jpg?quality=95&crop=141,184,1453,1453&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1280x1280,1440x1440&ava=1&u=gcvzguyLtcy-pHQ-kARNg8U6L254-hd1BJ6TuX9XYrQ&cs=200x200',
-      'https://sun77-1.userapi.com/s/v1/ig2/BH_z2Tt8nKEOCZ3i42yRrLhZf13yj_9Ntn4EiQNuJ-9tu7JXZro9wnDFctSDUe8hl_6WUQQMvpVUfT6EF9AxRLYP.jpg?quality=95&crop=141,184,1453,1453&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1280x1280,1440x1440&ava=1&u=gcvzguyLtcy-pHQ-kARNg8U6L254-hd1BJ6TuX9XYrQ&cs=200x200',
-      'https://sun77-1.userapi.com/s/v1/ig2/BH_z2Tt8nKEOCZ3i42yRrLhZf13yj_9Ntn4EiQNuJ-9tu7JXZro9wnDFctSDUe8hl_6WUQQMvpVUfT6EF9AxRLYP.jpg?quality=95&crop=141,184,1453,1453&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1280x1280,1440x1440&ava=1&u=gcvzguyLtcy-pHQ-kARNg8U6L254-hd1BJ6TuX9XYrQ&cs=200x200',
-    ]
-  });
+  const [currentUser, setCurrentUser] = React.useState();
 
   useEffect(() => {
     fetch('http://127.0.0.1:8000/users/')
@@ -182,13 +164,13 @@ export default function Home() {
           <div className="pb-7 flex flex-col justify-between gap-7 h-full overflow-hidden rounded-xl bg-gradient-to-t from-[#8787ee]/[0.04] to-[#1919ef]/[0.04] border-[1px] border-[#5c5c7c]/40">
             <div className="flex justify-between gap-8 w-full h-[60%] pt-7  pl-7">
               <div className="relative h-full w-[250px] overflow-hidden rounded-xl bg-gradient-to-t from-[#8787ee]/[0.04] to-[#1919ef]/[0.04] border-[1px] border-[#5c5c7c]/40">
-                <Image
+                { currentUser && <Image
                     src={`http://localhost:8000/${currentUser.images[0]}`}
                     alt={`${currentUser.name} picture`}
                     layout={'fill'}
                     objectFit={'contain'}
                     className="cursor-pointer select-none h-full w-full"
-                />
+                />}
               </div>
               <div className="flex flex-col gap-8 grow pt-7">
                 <div className="flex gap-5 w-full">
@@ -198,9 +180,9 @@ export default function Home() {
                     <h4 className="leading-none font-medium text-[17px] text-white/40">Отчество:</h4>
                   </div>
                   <div className="flex flex-col gap-5">
-                    <h4 className="leading-none font-medium text-[17px] text-white">{currentUser.surname}</h4>
-                    <h4 className="leading-none font-medium text-[17px] text-white">{currentUser.name}</h4>
-                    <h4 className="leading-none font-medium text-[17px] text-white">{currentUser.lastname}</h4>
+                    <h4 className="leading-none font-medium text-[17px] text-white">{currentUser?.surname}</h4>
+                    <h4 className="leading-none font-medium text-[17px] text-white">{currentUser?.name}</h4>
+                    <h4 className="leading-none font-medium text-[17px] text-white">{currentUser?.lastname}</h4>
                   </div>
                 </div>
                 <hr className="border-[#5c5c7c]/40" />
@@ -211,9 +193,9 @@ export default function Home() {
                     <h4 className="leading-none font-medium text-[17px] text-white/40">Отдел:</h4>
                   </div>
                   <div className="flex flex-col gap-6">
-                    <h4 className="leading-none font-medium text-[17px] text-white">{currentUser.job}</h4>
-                    <h4 className="leading-none font-medium text-[17px] text-white">{currentUser.age}</h4>
-                    <h4 className="leading-none font-medium text-[17px] text-white">{currentUser.department}</h4>
+                    <h4 className="leading-none font-medium text-[17px] text-white">{currentUser?.job}</h4>
+                    <h4 className="leading-none font-medium text-[17px] text-white">{currentUser?.age}</h4>
+                    <h4 className="leading-none font-medium text-[17px] text-white">{currentUser?.department}</h4>
                   </div>
                 </div>
               </div>            
@@ -226,7 +208,7 @@ export default function Home() {
                   slidesPerView={3.4}
                   className="px-7"
                 >
-                  { currentUser.images.map((image, index) => {
+                  { currentUser?.images.map((image, index) => {
                     return (
                       <SwiperSlide key={index}>
                         <div className="relative aspect-square h-full overflow-hidden rounded-xl bg-gradient-to-t from-[#8787ee]/[0.04] to-[#1919ef]/[0.04] border-[1px] border-[#5c5c7c]/40">
