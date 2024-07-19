@@ -102,10 +102,12 @@ export default function Home() {
     });
   }
 
-  function handleUserRemove(id) {
-    axios.post('http://127.0.0.1:8000/user/delete', {
+  async function handleUserRemove(id) {
+    await axios.post('http://127.0.0.1:8000/user/delete', {
       'id': id,
     })
+    
+    Refresh();
   }
 
   return (
