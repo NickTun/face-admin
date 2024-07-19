@@ -54,6 +54,10 @@ export default function Home() {
   const [currentUser, setCurrentUser] = React.useState();
 
   useEffect(() => {
+    Refresh();
+  }, []);
+
+  function Refresh() {
     fetch('http://127.0.0.1:8000/users/')
     .then(function(response) {
       return response.json();
@@ -68,7 +72,7 @@ export default function Home() {
       setEvents(data);
       setEventProps([...Array(data.length).fill(true)]);
     });
-  }, []);
+  }
 
   useEffect(() => {
     requestAnimationFrame(() => {
@@ -98,6 +102,12 @@ export default function Home() {
     });
   }
 
+  function handleUserRemove(id) {
+    axios.post('http://127.0.0.1:8000/user/delete', {
+      'id': id,
+    })
+  }
+
   return (
     <>
       <Head>
@@ -116,7 +126,7 @@ export default function Home() {
                       alt="user alt"
                       width={40}
                       height={40}
-                      className="cursor-pointer select-none"
+                      className="select-none"
                     />
                   </div>
                   <div className="select-none grow flex justify-between border-[#5c5c7c]/40 border-b-[1px] pr-5">
@@ -131,6 +141,7 @@ export default function Home() {
                         width={20}
                         height={20}
                         className="cursor-pointer select-none"
+                        onClick={() => handleUserRemove(user.id)}
                       />
                     </div>
                   </div>
