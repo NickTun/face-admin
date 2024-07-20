@@ -19,9 +19,11 @@ export default function Home() {
   const eventField = React.useRef(null);
   const userForm = React.useRef(null);
 
+  const socket = new WebSocket("ws://localhost:8000");
+
   const headers = {
-     "Access-Control-Allow-Origin": 'http://localhost:3000',
-      'Access-Control-Request-Method': 'GET',
+    "Access-Control-Allow-Origin": 'http://localhost:3000',
+    'Access-Control-Request-Method': 'GET',
   };
 
   const [users, setUsers] = React.useState([
@@ -78,7 +80,18 @@ export default function Home() {
 
   useEffect(() => {
     Refresh();
-    userForm.current.addEventListener('change', () => handleUserUpdate())
+    userForm.current.addEventListener('change', () => handleUserUpdate());
+
+    socket.onopen = event => {
+      console.log("connected")
+    };
+
+    socket.onmessage = event => {
+      console.log(`>>> WS data = ${event.data}`);
+      const data = JSON.parse(event.data);
+      const timestamp = new Date(Number(data.timestamp) * 1000).toLocaleString()
+      pushEvent(String(data.fullname), String(data.location), timestamp);
+    };
   }, []);
 
   function Refresh() {
@@ -87,6 +100,8 @@ export default function Home() {
       return response.json();
     }).then(function(data) {
       setUsers(data);
+    }).catch((error) => {
+      console.log(error);
     });
 
     fetch('http://127.0.0.1:8000/events/')
@@ -95,6 +110,8 @@ export default function Home() {
     }).then(function(data) {
       setEvents(data);
       setEventProps([...Array(data.length).fill(true)]);
+    }).catch((error) => {
+      console.log(error);
     });
 
     fetch('http://127.0.0.1:8000/departments/')
@@ -102,6 +119,8 @@ export default function Home() {
       return response.json();
     }).then(function(data) {
       setDepartments(data);
+    }).catch((error) => {
+      console.log(error);
     });
 
     fetch('http://127.0.0.1:8000/jobs/')
@@ -109,6 +128,8 @@ export default function Home() {
       return response.json();
     }).then(function(data) {
       setJobs(data);
+    }).catch((error) => {
+      console.log(error);
     });
   }
 
@@ -239,7 +260,7 @@ export default function Home() {
                   width={20}
                   height={20}
                   className="cursor-pointer select-none"
-                  onClick={() => pushEvent('pedro', 'pedro', 'pedro')}
+                  // onClick={() => pushEvent('pedro', 'pedro', 'pedro')}
               />
           </div>
         </div>
@@ -361,7 +382,7 @@ export default function Home() {
                     <div className="flex flex-col justify-center">
                       <h4 className="leading-none text-[11px] text-[#8484a4]">Прошел(а) в {event.location}</h4>
                       <h4 className="leading-none font-bold text-[14px]">{event.name}</h4>
-                      <h4 className="leading-none font-thin text-[11px] text-[#9f9fc6]">В {event.datetime}</h4>
+                      <h4 className="leading-none font-light text-[11px] text-[#9f9fc6]">В {event.datetime}</h4>
                     </div>
                   </div>
                 );
