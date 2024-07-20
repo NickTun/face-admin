@@ -262,7 +262,7 @@ export default function Home() {
                   </div>
                   <div className="flex flex-col justify-between grow">
                   <select name="job_id" className="w-full h-7 2xl:h-8 border-[1px] border-[#5c5c7c]/40 bg-black/20 outline-none px-[10px]
-                    rounded-[10px] leading-none font-medium text-[14px] 2xl:text-[17px] text-white cursor-pointer" value={currentUser?.job.id}>
+                    rounded-[10px] leading-none font-medium text-[14px] 2xl:text-[17px] text-white cursor-pointer" value={currentUser?.job}>
                       { jobs.map((job, index) => {
                         return (
                           <option key={index} value={job.id}>{job.title}</option>
@@ -272,7 +272,7 @@ export default function Home() {
                     <input type="number" name="age" className="w-full h-7 2xl:h-8 border-[1px] border-[#5c5c7c]/40 bg-black/20 outline-none px-[10px]
                     rounded-[10px] leading-none font-medium text-[14px] 2xl:text-[17px] text-white" value={currentUser?.age} />
                     <select name="department_id" className="w-full h-7 2xl:h-8 border-[1px] border-[#5c5c7c]/40 bg-black/20 outline-none px-[10px]
-                    rounded-[10px] leading-none font-medium text-[14px] 2xl:text-[17px] text-white cursor-pointer" value={currentUser?.department.id}>
+                    rounded-[10px] leading-none font-medium text-[14px] 2xl:text-[17px] text-white cursor-pointer" value={currentUser?.department}>
                       { departments.map((department, index) => {
                         return (
                           <option key={index} value={department.id}>{department.title}</option>
