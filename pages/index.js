@@ -143,9 +143,9 @@ export default function Home() {
   async function handleUserRemove(id) {
     await axios.post('http://127.0.0.1:8000/user/delete', {
       'id': id,
-    })
-    
-    Refresh();
+    }).then(() => {
+      Refresh();
+    });
   }
 
   function handleUserUpdate() {
@@ -155,10 +155,27 @@ export default function Home() {
       'name': user.name,
       'surname': user.surname,
       'lastname': user.lastname,
-      'position_id': user.department_id,
+      'department_id': user.department_id,
       'age': user.age,
       'job_id': user.job_id,
-    })
+    }).then(() => {
+      Refresh();
+    });
+  }
+
+  function handleFormUpdate (images) {
+    const user = Object.fromEntries(new FormData(userForm.current).entries());
+    const newUser = {
+      'id': user.id,
+      'name': user.name,
+      'surname': user.surname,
+      'lastname': user.lastname,
+      'department_id': user.department_id,
+      'age': user.age,
+      'job_id': user.job_id,
+      'images': images
+    };
+    setCurrentUser(newUser);
   }
 
   return (
@@ -172,7 +189,9 @@ export default function Home() {
           <div className="grow overflow-y-auto no__overflow">
             { users.map((user, index) => {
               return (
-                <div id={user.id} onClick={(e) => handleUserSelect(user.id)} key={index} className="flex gap-4 h-[80px] hover:bg-white/5 cursor-pointer">
+                <div id={user.id} className="flex gap-4 h-[80px] hover:bg-white/5 cursor-pointer" key={index}
+                onClick={(e) => handleUserSelect(user.id)}
+                >
                   <div className="flex flex-col justify-center pl-5">
                     <Image
                       src="/user.svg"
@@ -236,7 +255,7 @@ export default function Home() {
                     className="cursor-pointer select-none h-full w-full"
                 />}
               </div>
-              <form ref={userForm} className="flex flex-col gap-8 grow pt-7 pr-7">
+              <form ref={userForm} onChange={() => handleFormUpdate(currentUser.images)} className="flex flex-col gap-8 grow pt-7 pr-7">
                 <input type="hidden" name="id" value={currentUser?.id} />
                 <div className="flex gap-5 w-full">
                   <div className="flex flex-col gap-3 2xl:gap-4 w-[120px] 2xl:w-[150px]">
@@ -262,7 +281,7 @@ export default function Home() {
                   </div>
                   <div className="flex flex-col justify-between grow">
                   <select name="job_id" className="w-full h-7 2xl:h-8 border-[1px] border-[#5c5c7c]/40 bg-black/20 outline-none px-[10px]
-                    rounded-[10px] leading-none font-medium text-[14px] 2xl:text-[17px] text-white cursor-pointer" value={currentUser?.job}>
+                    rounded-[10px] leading-none font-medium text-[14px] 2xl:text-[17px] text-white cursor-pointer" value={currentUser?.job_id}>
                       { jobs.map((job, index) => {
                         return (
                           <option key={index} value={job.id}>{job.title}</option>
@@ -272,7 +291,7 @@ export default function Home() {
                     <input type="number" name="age" className="w-full h-7 2xl:h-8 border-[1px] border-[#5c5c7c]/40 bg-black/20 outline-none px-[10px]
                     rounded-[10px] leading-none font-medium text-[14px] 2xl:text-[17px] text-white" value={currentUser?.age} />
                     <select name="department_id" className="w-full h-7 2xl:h-8 border-[1px] border-[#5c5c7c]/40 bg-black/20 outline-none px-[10px]
-                    rounded-[10px] leading-none font-medium text-[14px] 2xl:text-[17px] text-white cursor-pointer" value={currentUser?.department}>
+                    rounded-[10px] leading-none font-medium text-[14px] 2xl:text-[17px] text-white cursor-pointer" value={currentUser?.department_id}>
                       { departments.map((department, index) => {
                         return (
                           <option key={index} value={department.id}>{department.title}</option>
