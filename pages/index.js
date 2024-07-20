@@ -17,6 +17,7 @@ export default function Home() {
   const [eventSearchState, setEventSearchState] = React.useState(false);
   const [eventProps, setEventProps] = React.useState([true, true]);
   const eventField = React.useRef(null);
+  const userForm = React.useRef(null);
 
   const headers = {
      "Access-Control-Allow-Origin": 'http://localhost:3000',
@@ -53,8 +54,31 @@ export default function Home() {
 
   const [currentUser, setCurrentUser] = React.useState();
 
+  const [departments, setDepartments] = React.useState([
+    {
+      'id': 0,
+      'title': 'Большие Данные'
+    },
+    {
+      'id': 1,
+      'title': 'Большие Города'
+    },
+  ]);
+
+  const [jobs, setJobs] = React.useState([
+    {
+      'id': 0,
+      'title': 'Грузчик'
+    },
+    {
+      'id': 1,
+      'title': 'Методист'
+    },
+  ]);
+
   useEffect(() => {
     Refresh();
+    userForm.current.addEventListener('change', () => handleUserUpdate())
   }, []);
 
   function Refresh() {
@@ -71,6 +95,20 @@ export default function Home() {
     }).then(function(data) {
       setEvents(data);
       setEventProps([...Array(data.length).fill(true)]);
+    });
+
+    fetch('http://127.0.0.1:8000/departments/')
+    .then(function(response) {
+      return response.json();
+    }).then(function(data) {
+      setDepartments(data);
+    });
+
+    fetch('http://127.0.0.1:8000/jobs/')
+    .then(function(response) {
+      return response.json();
+    }).then(function(data) {
+      setJobs(data);
     });
   }
 
@@ -110,6 +148,19 @@ export default function Home() {
     Refresh();
   }
 
+  function handleUserUpdate() {
+    const user = Object.fromEntries(new FormData(userForm.current).entries());
+    axios.post('http://127.0.0.1:8000/user/update', {
+      'id': user.id,
+      'name': user.name,
+      'surname': user.surname,
+      'lastname': user.lastname,
+      'position_id': user.department_id,
+      'age': user.age,
+      'job_id': user.job_id,
+    })
+  }
+
   return (
     <>
       <Head>
@@ -134,7 +185,7 @@ export default function Home() {
                   <div className="select-none grow flex justify-between border-[#5c5c7c]/40 border-b-[1px] pr-5">
                     <div className="flex flex-col justify-center">
                       <h4 className="leading-none font-bold text-[15px]">{user.name} {user.surname}</h4>
-                      <h4 className="leading-none text-[12px] text-white/50">{user.job}</h4>
+                      <h4 className="leading-none text-[12px] text-[#8484a4]">{user.job}</h4>
                     </div>
                     <div className="flex flex-col justify-center">
                       <Image
@@ -169,14 +220,14 @@ export default function Home() {
                   width={20}
                   height={20}
                   className="cursor-pointer select-none"
-                  // onClick={() => pushEvent('pedro', 'pedro', 'pedro')}
+                  onClick={() => pushEvent('pedro', 'pedro', 'pedro')}
               />
           </div>
         </div>
         <div className="grow p-5">
           <div className="pb-7 flex flex-col justify-between gap-7 h-full overflow-hidden rounded-xl bg-gradient-to-t from-[#8787ee]/[0.04] to-[#1919ef]/[0.04] border-[1px] border-[#5c5c7c]/40">
             <div className="flex justify-between gap-8 w-full h-[60%] pt-7  pl-7">
-              <div className="relative h-full w-[250px] overflow-hidden rounded-xl bg-gradient-to-t from-[#8787ee]/[0.04] to-[#1919ef]/[0.04] border-[1px] border-[#5c5c7c]/40">
+              <div className="relative h-full aspect-[3/4] overflow-hidden rounded-xl bg-black/10 border-[1px] border-[#5c5c7c]/40">
                 { currentUser && <Image
                     src={`http://localhost:8000/${currentUser.images[0]}`}
                     alt={`${currentUser.name} picture`}
@@ -185,33 +236,52 @@ export default function Home() {
                     className="cursor-pointer select-none h-full w-full"
                 />}
               </div>
-              <div className="flex flex-col gap-8 grow pt-7">
+              <form ref={userForm} className="flex flex-col gap-8 grow pt-7 pr-7">
+                <input type="hidden" name="id" value={currentUser?.id} />
                 <div className="flex gap-5 w-full">
-                  <div className="flex flex-col gap-5">
-                    <h4 className="leading-none font-medium text-[17px] text-white/40">Фамилия:</h4>
-                    <h4 className="leading-none font-medium text-[17px] text-white/40">Имя:</h4>
-                    <h4 className="leading-none font-medium text-[17px] text-white/40">Отчество:</h4>
+                  <div className="flex flex-col gap-3 2xl:gap-4 w-[120px] 2xl:w-[150px]">
+                    <h4 className="leading-none font-medium text-[17px] 2xl:text-[21px] text-[#6a6a83] content-center h-7 2xl:h-8">Фамилия:</h4>
+                    <h4 className="leading-none font-medium text-[17px] 2xl:text-[21px] text-[#6a6a83] content-center h-7 2xl:h-8">Имя:</h4>
+                    <h4 className="leading-none font-medium text-[17px] 2xl:text-[21px] text-[#6a6a83] content-center h-7 2xl:h-8">Отчество:</h4>
                   </div>
-                  <div className="flex flex-col gap-5">
-                    <h4 className="leading-none font-medium text-[17px] text-white">{currentUser?.surname}</h4>
-                    <h4 className="leading-none font-medium text-[17px] text-white">{currentUser?.name}</h4>
-                    <h4 className="leading-none font-medium text-[17px] text-white">{currentUser?.lastname}</h4>
+                  <div className="flex flex-col justify-between grow">
+                    <input type="text" name="surname" className="w-full h-7 2xl:h-8 border-[1px] border-[#5c5c7c]/40 bg-black/20 outline-none px-[10px]
+                    rounded-[10px] leading-none font-medium text-[14px] 2xl:text-[17px] text-white" value={currentUser?.surname} />
+                    <input type="text" name="name" className="w-full h-7 2xl:h-8 border-[1px] border-[#5c5c7c]/40 bg-black/20 outline-none px-[10px]
+                    rounded-[10px] leading-none font-medium text-[14px] 2xl:text-[17px] text-white" value={currentUser?.name} />
+                    <input type="text" name="lastname" className="w-full h-7 2xl:h-8 border-[1px] border-[#5c5c7c]/40 bg-black/20 outline-none px-[10px]
+                    rounded-[10px] leading-none font-medium text-[14px] 2xl:text-[17px] text-white" value={currentUser?.lastname} />
                   </div>
                 </div>
                 <hr className="border-[#5c5c7c]/40" />
                 <div className="flex gap-5 w-full">
-                  <div className="flex flex-col gap-6">
-                    <h4 className="leading-none font-medium text-[17px] text-white/40">Должность:</h4>
-                    <h4 className="leading-none font-medium text-[17px] text-white/40">Возраст:</h4>
-                    <h4 className="leading-none font-medium text-[17px] text-white/40">Отдел:</h4>
+                  <div className="flex flex-col gap-3 2xl:gap-4 w-[120px] 2xl:w-[150px]">
+                    <h4 className="leading-none font-medium text-[17px] 2xl:text-[21px] text-[#6a6a83] content-center h-7 2xl:h-8]">Должность:</h4>
+                    <h4 className="leading-none font-medium text-[17px] 2xl:text-[21px] text-[#6a6a83] content-center h-7 2xl:h-8">Возраст:</h4>
+                    <h4 className="leading-none font-medium text-[17px] 2xl:text-[21px] text-[#6a6a83] content-center h-7 2xl:h-8">Отдел:</h4>
                   </div>
-                  <div className="flex flex-col gap-6">
-                    <h4 className="leading-none font-medium text-[17px] text-white">{currentUser?.job}</h4>
-                    <h4 className="leading-none font-medium text-[17px] text-white">{currentUser?.age}</h4>
-                    <h4 className="leading-none font-medium text-[17px] text-white">{currentUser?.department}</h4>
+                  <div className="flex flex-col justify-between grow">
+                  <select name="job_id" className="w-full h-7 2xl:h-8 border-[1px] border-[#5c5c7c]/40 bg-black/20 outline-none px-[10px]
+                    rounded-[10px] leading-none font-medium text-[14px] 2xl:text-[17px] text-white cursor-pointer" value={currentUser?.job.id}>
+                      { jobs.map((job, index) => {
+                        return (
+                          <option key={index} value={job.id}>{job.title}</option>
+                        );
+                      })}
+                    </select>
+                    <input type="number" name="age" className="w-full h-7 2xl:h-8 border-[1px] border-[#5c5c7c]/40 bg-black/20 outline-none px-[10px]
+                    rounded-[10px] leading-none font-medium text-[14px] 2xl:text-[17px] text-white" value={currentUser?.age} />
+                    <select name="department_id" className="w-full h-7 2xl:h-8 border-[1px] border-[#5c5c7c]/40 bg-black/20 outline-none px-[10px]
+                    rounded-[10px] leading-none font-medium text-[14px] 2xl:text-[17px] text-white cursor-pointer" value={currentUser?.department.id}>
+                      { departments.map((department, index) => {
+                        return (
+                          <option key={index} value={department.id}>{department.title}</option>
+                        );
+                      })}
+                    </select>
                   </div>
                 </div>
-              </div>            
+              </form>            
             </div>
             <hr className="border-[#5c5c7c]/40 w-full ml-7"/>
             <div className="grow relative">
@@ -224,7 +294,7 @@ export default function Home() {
                   { currentUser?.images.map((image, index) => {
                     return (
                       <SwiperSlide key={index}>
-                        <div className="relative aspect-square h-full overflow-hidden rounded-xl bg-gradient-to-t from-[#8787ee]/[0.04] to-[#1919ef]/[0.04] border-[1px] border-[#5c5c7c]/40">
+                        <div className="relative aspect-[3/4] h-full overflow-hidden rounded-xl bg-black/10 border-[1px] border-[#5c5c7c]/40">
                           <Image
                               src={`http://localhost:8000/${image}`}
                               alt={`${currentUser.name} picture`}
@@ -236,6 +306,20 @@ export default function Home() {
                       </SwiperSlide>
                     );
                   }) }
+                  <SwiperSlide>
+                    <div className="relative flex justify-center content-center aspect-[3/4] flex-wrap
+                    h-full overflow-hidden rounded-xl bg-black/10 border-[1px] border-[#5c5c7c]/40">
+                      <div className="h-[20%] aspect-square relative cursor-pointer">
+                        <Image
+                            src={`/add_2.svg`}
+                            alt={`add a picture`}
+                            layout={'fill'}
+                            objectFit={'contain'}
+                            className="select-none"
+                        />
+                      </div>
+                    </div>
+                  </SwiperSlide>
                 </Swiper>
               </div>
             </div>
@@ -256,9 +340,9 @@ export default function Home() {
                       className="select-none"
                     />
                     <div className="flex flex-col justify-center">
-                      <h4 className="leading-none text-[11px] text-white/50">Прошел(а) в {event.location}</h4>
+                      <h4 className="leading-none text-[11px] text-[#8484a4]">Прошел(а) в {event.location}</h4>
                       <h4 className="leading-none font-bold text-[14px]">{event.name}</h4>
-                      <h4 className="leading-none font-thin text-[11px] text-white/50">В {event.datetime}</h4>
+                      <h4 className="leading-none font-thin text-[11px] text-[#9f9fc6]">В {event.datetime}</h4>
                     </div>
                   </div>
                 );
@@ -270,7 +354,7 @@ export default function Home() {
             >
               <div
                 className="transition-all duration-500 px-2 flex justify-between gap-2 rounded-lg bg-black/10 border border-[#5c5c7c]/40 focus:outline-none focus:border-slate-700"
-                style={{ width: eventSearchState ? '100%' : '50px' }}
+                style={{ width: eventSearchState ? '100%' : '18%' }}
               >
                 <label htmlFor="eventSearch" className="h-full flex flex-col justify-center w-fit flex-none">
                   <Image
