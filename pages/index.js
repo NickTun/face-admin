@@ -184,6 +184,21 @@ export default function Home() {
     });
   }
 
+  function handleUserCreate() {
+    // const user = Object.fromEntries(new FormData(userForm.current).entries());
+    axios.post('http://127.0.0.1:8000/user/create', {
+      'name': '',
+      'surname': '',
+      'lastname': '',
+      'department_id': 0,
+      'age': 0,
+      'job_id': 0,
+    }).then((response) => {
+      Refresh();
+      handleUserSelect(response.id);
+    });
+  }
+
   function handleFormUpdate (images) {
     const user = Object.fromEntries(new FormData(userForm.current).entries());
     const newUser = {
@@ -260,7 +275,7 @@ export default function Home() {
                   width={20}
                   height={20}
                   className="cursor-pointer select-none"
-                  // onClick={() => pushEvent('pedro', 'pedro', 'pedro')}
+                  onClick={() => handleUserCreate()}
               />
           </div>
         </div>
@@ -286,11 +301,11 @@ export default function Home() {
                   </div>
                   <div className="flex flex-col justify-between grow">
                     <input type="text" name="surname" className="w-full h-7 2xl:h-8 border-[1px] border-[#5c5c7c]/40 bg-black/20 outline-none px-[10px]
-                    rounded-[10px] leading-none font-medium text-[14px] 2xl:text-[17px] text-white" value={currentUser?.surname} />
+                    rounded-[10px] leading-none font-medium text-[14px] 2xl:text-[17px] text-white" value={currentUser?.surname} placeholder="Введите фамилию"/>
                     <input type="text" name="name" className="w-full h-7 2xl:h-8 border-[1px] border-[#5c5c7c]/40 bg-black/20 outline-none px-[10px]
-                    rounded-[10px] leading-none font-medium text-[14px] 2xl:text-[17px] text-white" value={currentUser?.name} />
+                    rounded-[10px] leading-none font-medium text-[14px] 2xl:text-[17px] text-white" value={currentUser?.name} placeholder="Введите имя"/>
                     <input type="text" name="lastname" className="w-full h-7 2xl:h-8 border-[1px] border-[#5c5c7c]/40 bg-black/20 outline-none px-[10px]
-                    rounded-[10px] leading-none font-medium text-[14px] 2xl:text-[17px] text-white" value={currentUser?.lastname} />
+                    rounded-[10px] leading-none font-medium text-[14px] 2xl:text-[17px] text-white" value={currentUser?.lastname} placeholder="Введите отчество" />
                   </div>
                 </div>
                 <hr className="border-[#5c5c7c]/40" />
@@ -303,6 +318,7 @@ export default function Home() {
                   <div className="flex flex-col justify-between grow">
                   <select name="job_id" className="w-full h-7 2xl:h-8 border-[1px] border-[#5c5c7c]/40 bg-black/20 outline-none px-[10px]
                     rounded-[10px] leading-none font-medium text-[14px] 2xl:text-[17px] text-white cursor-pointer" value={currentUser?.job_id}>
+                      <option value={0}>Выберите должность</option>
                       { jobs.map((job, index) => {
                         return (
                           <option key={index} value={job.id}>{job.title}</option>
@@ -310,9 +326,10 @@ export default function Home() {
                       })}
                     </select>
                     <input type="number" name="age" className="w-full h-7 2xl:h-8 border-[1px] border-[#5c5c7c]/40 bg-black/20 outline-none px-[10px]
-                    rounded-[10px] leading-none font-medium text-[14px] 2xl:text-[17px] text-white" value={currentUser?.age} />
+                    rounded-[10px] leading-none font-medium text-[14px] 2xl:text-[17px] text-white" value={currentUser?.age} placeholder="Введите возраст"/>
                     <select name="department_id" className="w-full h-7 2xl:h-8 border-[1px] border-[#5c5c7c]/40 bg-black/20 outline-none px-[10px]
                     rounded-[10px] leading-none font-medium text-[14px] 2xl:text-[17px] text-white cursor-pointer" value={currentUser?.department_id}>
+                      <option value={0}>Выберите отдел</option>
                       { departments.map((department, index) => {
                         return (
                           <option key={index} value={department.id}>{department.title}</option>
