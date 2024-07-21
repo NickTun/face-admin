@@ -109,7 +109,7 @@ export default function Home() {
     if(id == 0) {
       setCurrentUser(null);
     } else {
-      fetch(`http://127.0.0.1:8000/user?id=${id}`)
+      fetch(`http://127.0.0.1:8000/users/${id}`)
       .then(function(response) {
         return response.json();
       }).then(function(data) {
@@ -120,10 +120,9 @@ export default function Home() {
     
   }
 
-  async function handleUserRemove(id) {
-    await axios.post('http://127.0.0.1:8000/user/delete', {
-      'id': id,
-    }).then(() => {
+  async function handleUserDelete(id) {
+    await axios.post(`http://127.0.0.1:8000/users/${id}/delete`)
+    .then(() => {
       Refresh();
       handleUserSelect(0);
     });
@@ -131,8 +130,7 @@ export default function Home() {
 
   function handleUserUpdate() {
     const user = Object.fromEntries(new FormData(userForm.current).entries());
-    axios.post('http://127.0.0.1:8000/user/update', {
-      'id': user.id,
+    axios.post(`http://127.0.0.1:8000/users/${user.id}/update`, {
       'name': user.name,
       'surname': user.surname,
       'lastname': user.lastname,
@@ -145,7 +143,7 @@ export default function Home() {
   }
 
   function handleUserCreate() {
-    axios.post('http://127.0.0.1:8000/user/create', {
+    axios.post('http://127.0.0.1:8000/users/create', {
       'name': '',
       'surname': '',
       'lastname': '',
@@ -174,14 +172,23 @@ export default function Home() {
   }
 
   function handleImageUpload(file, id) {
-    const formData = new FormData();
-    formData.append("file", file);
-    axios.put(`http://127.0.0.1:8000/image/put?user_id=${id}`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      }
-    }).then(() => {
-      handleUserSelect(id);
+    if(file) {
+      const formData = new FormData();
+      formData.append("file", file);
+      axios.put(`http://127.0.0.1:8000/images/put?user_id=${id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        }
+      }).then(() => {
+        handleUserSelect(id);
+      });
+    }
+  }
+
+  function handleImageDelete(id, user_id) {
+    axios.delete(`http://127.0.0.1:8000/images/${id}/delete`)
+    .then(() => {
+      handleUserSelect(user_id);
     });
   }
 
@@ -220,7 +227,7 @@ export default function Home() {
                         width={20}
                         height={20}
                         className="cursor-pointer select-none"
-                        onClick={(e) => {e.stopPropagation(); handleUserRemove(user.id)}}
+                        onClick={(e) => {e.stopPropagation(); handleUserDelete(user.id)}}
                       />
                     </div>
                   </div>
@@ -256,7 +263,7 @@ export default function Home() {
             <div className="flex justify-between gap-8 w-full h-[60%] pt-7  pl-7">
               <div className="relative h-full aspect-[3/4] overflow-hidden rounded-xl bg-black/10 border-[1px] border-[#5c5c7c]/40">
                 { currentUser && <Image
-                    src={`http://localhost:8000/${currentUser.images[0]}`}
+                    src={`http://localhost:8000/${currentUser.images[0]?.path}`}
                     alt={`${currentUser.name} picture`}
                     layout={'fill'}
                     objectFit={'contain'}
@@ -323,12 +330,24 @@ export default function Home() {
                     return (
                       <SwiperSlide key={index}>
                         <div className="relative aspect-[3/4] h-full overflow-hidden rounded-xl bg-black/10 border-[1px] border-[#5c5c7c]/40">
+                          <div className="p-4 absolute inset-0 bg-gradient-to-b from-black/0 to-black/80 opacity-0 hover:opacity-100 transition-all duration-300 z-10">
+                            <div className="w-full h-full flex flex-col justify-end flex-wrap content-end">
+                              <Image
+                                src="/cross_2.svg"
+                                alt="user alt"
+                                width={22}
+                                height={22}
+                                className="cursor-pointer select-none"
+                                onClick={(e) => handleImageDelete(image.id, currentUser.id)}
+                              />
+                            </div>
+                          </div>
                           <Image
-                              src={`http://localhost:8000/${image}`}
+                              src={`http://localhost:8000/${image.path}`}
                               alt={`${currentUser.name} picture`}
                               layout={'fill'}
                               objectFit={'contain'}
-                              className="cursor-pointer select-none relative"
+                              className="select-none relative"
                           />
                         </div>
                       </SwiperSlide>
@@ -370,7 +389,7 @@ export default function Home() {
                     />
                     <div className="flex flex-col justify-center">
                       <h4 className="leading-none text-[11px] text-[#8484a4]">Прошел(а) в {event.location}</h4>
-                      <h4 className="leading-none font-bold text-[14px]">{event.user?.name} {event.user?.lastname}</h4>
+                      <h4 className="leading-none font-bold text-[14px]">{event.user?.name} {event.user?.surname}</h4>
                       <h4 className="leading-none font-light text-[11px] text-[#9f9fc6]">В {new Date(Number(event.timestamp) * 1000).toLocaleString()}</h4>
                     </div>
                   </div>
