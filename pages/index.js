@@ -26,57 +26,11 @@ export default function Home() {
     'Access-Control-Request-Method': 'GET',
   };
 
-  const [users, setUsers] = React.useState([
-    {
-      'id': '32',
-      'name': 'Мирзиахмед',
-      'surname': 'Викторович',
-      'job': 'Грузчик'
-    }, 
-    {
-      'id': '12',
-      'name': 'Александер',
-      'surname': 'Садовников',
-      'job': 'Методист'
-    }, 
-  ]);
-
-  const [events, setEvents] = React.useState([
-    {
-      'name': 'Мирзиахмед Викторович',
-      'location': 'Склад Б',
-      'timestamp': '1721457649.5150905'
-    }, 
-    {
-      'name': 'Мирзиахмед Викторович',
-      'location': 'Офис А',
-      'timestamp': '1721457649.5150905'
-    }, 
-  ]);
-
+  const [users, setUsers] = React.useState([]);
+  const [events, setEvents] = React.useState([]);
   const [currentUser, setCurrentUser] = React.useState();
-
-  const [departments, setDepartments] = React.useState([
-    {
-      'id': 0,
-      'title': 'Большие Данные'
-    },
-    {
-      'id': 1,
-      'title': 'Большие Города'
-    },
-  ]);
-
-  const [jobs, setJobs] = React.useState([
-    {
-      'id': 0,
-      'title': 'Грузчик'
-    },
-    {
-      'id': 1,
-      'title': 'Методист'
-    },
-  ]);
+  const [departments, setDepartments] = React.useState([]);
+  const [jobs, setJobs] = React.useState([]);
 
   useEffect(() => {
     Refresh();
@@ -159,6 +113,7 @@ export default function Home() {
       .then(function(response) {
         return response.json();
       }).then(function(data) {
+        console.log(data);
         setCurrentUser(data);
       });
     }
@@ -203,7 +158,7 @@ export default function Home() {
     });
   }
 
-  function handleFormUpdate (images) {
+  function handleFormUpdate(images) {
     const user = Object.fromEntries(new FormData(userForm.current).entries());
     const newUser = {
       'id': user.id,
@@ -216,6 +171,18 @@ export default function Home() {
       'images': images
     };
     setCurrentUser(newUser);
+  }
+
+  function handleImageUpload(file, id) {
+    const formData = new FormData();
+    formData.append("file", file);
+    axios.put(`http://127.0.0.1:8000/image/put?user_id=${id}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      }
+    }).then(() => {
+      handleUserSelect(id);
+    });
   }
 
   return (
@@ -323,7 +290,6 @@ export default function Home() {
                   <div className="flex flex-col justify-between grow">
                   <select name="job_id" className="w-full h-7 2xl:h-8 border-[1px] border-[#5c5c7c]/40 bg-black/20 outline-none px-[10px]
                     rounded-[10px] leading-none font-medium text-[14px] 2xl:text-[17px] text-white cursor-pointer" value={currentUser?.job_id}>
-                      <option value={0}>Выберите должность</option>
                       { jobs.map((job, index) => {
                         return (
                           <option key={index} value={job.id}>{job.title}</option>
@@ -350,7 +316,7 @@ export default function Home() {
               <div className="absolute inset-0 overflow-hidden px-7">
                 <Swiper
                   spaceBetween={30}
-                  slidesPerView={3.4}
+                  slidesPerView={4.2}
                   className="px-7"
                 >
                   { currentUser?.images.map((image, index) => {
@@ -371,7 +337,7 @@ export default function Home() {
                   <SwiperSlide>
                     <div className="relative flex justify-center content-center aspect-[3/4] flex-wrap
                     h-full overflow-hidden rounded-xl bg-black/10 border-[1px] border-[#5c5c7c]/40">
-                      <div className="h-[20%] aspect-square relative cursor-pointer">
+                      <label htmlFor="image_load_field" className="h-[20%] aspect-square relative cursor-pointer">
                         <Image
                             src={`/add_2.svg`}
                             alt={`add a picture`}
@@ -379,7 +345,8 @@ export default function Home() {
                             objectFit={'contain'}
                             className="select-none"
                         />
-                      </div>
+                      </label>
+                      <input id="image_load_field" type="file" accept=".jpg,.jpeg,.png" className="hidden" onChange={(e) => handleImageUpload(e.target.files[0], currentUser.id)}/>
                     </div>
                   </SwiperSlide>
                 </Swiper>
@@ -403,7 +370,7 @@ export default function Home() {
                     />
                     <div className="flex flex-col justify-center">
                       <h4 className="leading-none text-[11px] text-[#8484a4]">Прошел(а) в {event.location}</h4>
-                      <h4 className="leading-none font-bold text-[14px]">{event.user}</h4>
+                      <h4 className="leading-none font-bold text-[14px]">{event.user?.name} {event.user?.lastname}</h4>
                       <h4 className="leading-none font-light text-[11px] text-[#9f9fc6]">В {new Date(Number(event.timestamp) * 1000).toLocaleString()}</h4>
                     </div>
                   </div>
