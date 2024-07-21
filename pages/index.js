@@ -45,12 +45,12 @@ export default function Home() {
     {
       'name': 'Мирзиахмед Викторович',
       'location': 'Склад Б',
-      'datetime': '08:08 20.11.24'
+      'timestamp': '1721457649.5150905'
     }, 
     {
       'name': 'Мирзиахмед Викторович',
       'location': 'Офис А',
-      'datetime': '08:08 20.11.24'
+      'timestamp': '1721457649.5150905'
     }, 
   ]);
 
@@ -89,8 +89,7 @@ export default function Home() {
     socket.onmessage = event => {
       console.log(`>>> WS data = ${event.data}`);
       const data = JSON.parse(event.data);
-      const timestamp = new Date(Number(data.timestamp) * 1000).toLocaleString()
-      pushEvent(String(data.fullname), String(data.location), timestamp);
+      pushEvent(String(data.fullname), String(data.location), Number(data.timestamp));
     };
   }, []);
 
@@ -153,12 +152,17 @@ export default function Home() {
   }
 
   function handleUserSelect(id) {
-    fetch(`http://127.0.0.1:8000/user?id=${id}`)
-    .then(function(response) {
-      return response.json();
-    }).then(function(data) {
-      setCurrentUser(data);
-    });
+    if(id == 0) {
+      setCurrentUser(null);
+    } else {
+      fetch(`http://127.0.0.1:8000/user?id=${id}`)
+      .then(function(response) {
+        return response.json();
+      }).then(function(data) {
+        setCurrentUser(data);
+      });
+    }
+    
   }
 
   async function handleUserRemove(id) {
@@ -166,6 +170,7 @@ export default function Home() {
       'id': id,
     }).then(() => {
       Refresh();
+      handleUserSelect(0);
     });
   }
 
@@ -185,7 +190,6 @@ export default function Home() {
   }
 
   function handleUserCreate() {
-    // const user = Object.fromEntries(new FormData(userForm.current).entries());
     axios.post('http://127.0.0.1:8000/user/create', {
       'name': '',
       'surname': '',
@@ -195,7 +199,7 @@ export default function Home() {
       'job_id': 0,
     }).then((response) => {
       Refresh();
-      handleUserSelect(response.id);
+      handleUserSelect(response.data.data.id);
     });
   }
 
@@ -249,7 +253,7 @@ export default function Home() {
                         width={20}
                         height={20}
                         className="cursor-pointer select-none"
-                        onClick={() => handleUserRemove(user.id)}
+                        onClick={(e) => {e.stopPropagation(); handleUserRemove(user.id)}}
                       />
                     </div>
                   </div>
@@ -280,7 +284,8 @@ export default function Home() {
           </div>
         </div>
         <div className="grow p-5">
-          <div className="pb-7 flex flex-col justify-between gap-7 h-full overflow-hidden rounded-xl bg-gradient-to-t from-[#8787ee]/[0.04] to-[#1919ef]/[0.04] border-[1px] border-[#5c5c7c]/40">
+          <div className="pb-7 flex-col justify-between gap-7 h-full overflow-hidden rounded-xl bg-gradient-to-t from-[#8787ee]/[0.04]
+          to-[#1919ef]/[0.04] border-[1px] border-[#5c5c7c]/40" style={{ display: currentUser ? 'flex' : 'none'}}>
             <div className="flex justify-between gap-8 w-full h-[60%] pt-7  pl-7">
               <div className="relative h-full aspect-[3/4] overflow-hidden rounded-xl bg-black/10 border-[1px] border-[#5c5c7c]/40">
                 { currentUser && <Image
@@ -398,8 +403,8 @@ export default function Home() {
                     />
                     <div className="flex flex-col justify-center">
                       <h4 className="leading-none text-[11px] text-[#8484a4]">Прошел(а) в {event.location}</h4>
-                      <h4 className="leading-none font-bold text-[14px]">{event.name}</h4>
-                      <h4 className="leading-none font-light text-[11px] text-[#9f9fc6]">В {event.datetime}</h4>
+                      <h4 className="leading-none font-bold text-[14px]">{event.user}</h4>
+                      <h4 className="leading-none font-light text-[11px] text-[#9f9fc6]">В {new Date(Number(event.timestamp) * 1000).toLocaleString()}</h4>
                     </div>
                   </div>
                 );
